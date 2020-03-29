@@ -14,7 +14,7 @@
 
                     <div class="control has-icons-right is-half">
                         <input class="input is-large" type="email" placeholder="Todo" id="todo-input"
-                               @change="addTodo(todoTitle)" v-model="todoTitle">
+                               @keyup.enter="addTodo(todoTitle)" v-model="todoTitle" style="color:gray">
                         <span class="icon is-medium is-right">
                             <i class="fas fa-plus"></i>
                         </span>
@@ -47,11 +47,6 @@
     import todoViewer from "@/components/TodoViewer";
     import {toast} from 'bulma-toast'
 
-    loguxClient.on('add', (action) => {
-        console.log(action)
-        return
-    })
-
 
     export default {
         name: 'HelloWorld',
@@ -63,7 +58,7 @@
         mixins: [loguxClient],
 
 
-        data: () => {
+        data: function () {
             return {
                 todoList: [],
                 todoTitle: undefined,
@@ -73,22 +68,53 @@
         },
 
 
+        computed: {
+
+        },
+
+
+        watch: {
+            todoList: () => {
+                console.log('todoList was been changed', this)
+            }
+        },
+
+
+        beforeCreate() {
+            console.log('beaforeCreate', this.todoList)
+        },
+
+
+        created() {
+
+            console.log('created', this.todoList)
+        },
+
         mounted() {
+            console.log('mounted')
 
             loguxClient.log.add({type: 'logux/subscribe', channel: 'todo/all'}, {sync: true})
 
             loguxClient.on('add', (action) => {
+                console.log('action from mounted', action)
+
+                //add new todo from other client
+                if (action.type === 'todo/add') {
+                    this.todoList.push(action.newTodo)
+                }
 
                 //get all todo from backend
-                if (action.type == 'todo/all') {
+                if (action.type === 'todo/all') {
+                    console.log('todo/all', action.todos)
                     this.todoList = [...action.todos]
                 }
 
                 //proof of sync action on backend
                 if (action.type == 'logux/processed') {
-                    return
+                    console.log('action was added')
                 }
             })
+
 
             loguxClient.on('state', () => {
 
@@ -115,10 +141,19 @@
         },
 
 
+        beforeUpdate() {
+            console.log('beforeUpdate')
+        },
+
+
+        updated() {
+            console.log('updated')
+        },
+
+
         methods: {
 
             addTodo(_title) {
-
                 console.log('addTodo', _title)
 
                 if (_title.trim() === '') return
