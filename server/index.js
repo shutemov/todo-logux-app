@@ -19,23 +19,21 @@ app.auth((userId, token) => {
 
 app.type('todo/add', {
 
+    resend() {
+        console.log('type resend todo/add')
+        return { channel: 'todo/all' }
+    },
+
     access() {
-        console.log('type access todo/add')
+        console.log('type acscess todo/add')
         return true;
     },
 
-    // resend() {
-    //     console.log('type resend todo/add')
-    //     return { channel: 'todo/all' }
-    // },
-
     process(ctx, action, meta) {
-        console.log('type process todo/add',todos)
-        console.log('type process todo/add',action.newTodo)
+        console.log('type process todo/add', todos)
         todos.push(action.newTodo)
-        ctx.sendBack({type:'todo/added'},{reasons:'todo added'})
     }
-    
+
 });
 
 
@@ -66,13 +64,9 @@ app.channel('todo/all', {
         return true
     },
 
-    resend(ctx, action, meta) {
-        console.log('channel resend todo/all')
-        ctx.sendBack({ type: 'todo/all', todos }, { reasons: 'fromServer' })
-    },
 
     init(ctx, action, meta) {
-        console.log('channel init todo/all',todos)
+        console.log('channel init todo/all', todos)
         ctx.sendBack({ type: 'todo/all', todos }, { reasons: 'fromServer' })
     }
 
