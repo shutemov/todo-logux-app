@@ -19,19 +19,23 @@ app.auth((userId, token) => {
 
 app.type('todo/add', {
 
-    resend() {
-        console.log('type resend todo/add')
-        return { channel: 'todo/all' }
-    },
 
     access() {
         console.log('type acscess todo/add')
         return true;
     },
 
+    resend() {
+        console.log('type resend todo/add')
+        return { channel: 'todo/all' }
+    },
+
     process(ctx, action, meta) {
-        console.log('type process todo/add', todos)
+        console.log('todo/add meta ', meta)
         todos.push(action.newTodo)
+        return { check: true }
+        console.log('type process todo/add', todos)
+
     }
 
 });
@@ -44,14 +48,14 @@ app.type('todo/delete', {
         return true;
     },
 
-    // resend() {
-    //     console.log('type resend todo/add')
-    //     return { channel: 'todo/all' }
-    // },
+    resend() {
+        console.log('type resend todo/delete')
+        return { channel: 'todo/all' }
+    },
 
     process(ctx, action, meta) {
-        console.log('type process todo/delete', todos)
         todos = todos.filter((todo) => { return todo.title != action.todo.title })
+        console.log('type process todo/delete', todos)
     }
 
 });
