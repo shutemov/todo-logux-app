@@ -31,11 +31,8 @@ app.type('todo/add', {
     },
 
     process(ctx, action, meta) {
-        console.log('todo/add meta ', meta)
         todos.push(action.newTodo)
-        return { check: true }
         console.log('type process todo/add', todos)
-
     }
 
 });
