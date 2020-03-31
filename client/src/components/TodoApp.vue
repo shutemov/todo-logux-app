@@ -68,9 +68,7 @@
         },
 
 
-        computed: {
-
-        },
+        computed: {},
 
 
         watch: {
@@ -90,6 +88,7 @@
             console.log('created', this.todoList)
         },
 
+
         mounted() {
             console.log('mounted')
 
@@ -98,26 +97,41 @@
             loguxClient.on('add', (action) => {
                 console.log('action from mounted', action)
 
-                //add new todo from other client
-                if (action.type === 'todo/add') {
-                    this.todoList.push(action.newTodo)
-                }
+                switch (action.type) {
 
-                //get all todo from backend
-                if (action.type === 'todo/all') {
-                    console.log('todo/all', action.todos)
-                    this.todoList = [...action.todos]
-                }
+                    case 'todo/add': {
+                        //add todo from other client
+                        console.log('todo/add', action.newTodo)
+                        this.todoList.push(action.newTodo)
+                        break
+                    }
 
-                //proof of sync action on backend
-                if (action.type == 'logux/processed') {
-                    console.log('action was added')
+                    case 'todo/delete': {
+                        this.todoList = this.todoList.filter((todo) => {
+                            return todo.title !== action.todo.title
+                        })
+                        break
+                    }
+
+                    case 'todo/all': {
+                        console.log('todo/all', action.todos)
+                        this.todoList = [...action.todos]
+                        break
+                    }
+
+                    case 'logux/processed': {
+                        console.log('action was added')
+                        break
+                    }
+
+
+                    default: {
+                        console.log('default')
+                    }
                 }
             })
 
-
             loguxClient.on('state', () => {
-
                 if (loguxClient.state === 'disconnected' || loguxClient.state === 'connecting' || loguxClient.state === 'sending') {
                     this.isConnection = false
                 } else {
@@ -154,7 +168,8 @@
         methods: {
 
             addTodo(_title) {
-                console.log('addTodo', _title)
+                
+                console.log('addTodo from TodoApp', _title)
 
                 if (_title.trim() === '') return
 
