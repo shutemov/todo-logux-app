@@ -11,14 +11,11 @@
 
 <script>
     import todoItem from '@/components/TodoViewerItem'
-    import loguxClient from '@/mixins/logux-client'
+
 
 
     export default {
         name: 'TodoList',
-
-
-        mixins: [loguxClient],
 
 
         components: {
