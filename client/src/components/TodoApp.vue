@@ -30,7 +30,7 @@
                 <div class="columns is-centered">
                     <div class="column is-half">
                         <todo-viewer
-                                :todo-list="todoList"
+                                :todo-list="todos"
                                 v-on:todo:delete="deleteTodo($event)"></todo-viewer>
                     </div>
                 </div>
@@ -43,9 +43,10 @@
 </template>
 
 <script>
-    import loguxClient from '../mixins/logux-client'
-    import todoViewer from "@/components/TodoViewer";
-    import {toast} from 'bulma-toast'
+    import todoViewer from '@/components/TodoViewer';
+    import store from '../store/store'
+    import {mapGetters, mapMutations} from 'vuex'
+    // import {toast} from 'bulma-toast'
 
 
     export default {
@@ -55,12 +56,8 @@
         components: {todoViewer},
 
 
-        mixins: [loguxClient],
-
-
         data: function () {
             return {
-                todoList: [],
                 todoTitle: undefined,
                 connectionStatus: undefined,
                 isConnection: undefined
@@ -68,7 +65,13 @@
         },
 
 
-        computed: {},
+        computed: {
+            ...mapGetters(['getTodos']),
+
+            todos() {
+                return this.getTodos
+            }
+        },
 
 
         watch: {
@@ -79,6 +82,7 @@
 
 
         beforeCreate() {
+            store.client.log.add({type: 'logux/subscribe', channel: 'todo/all'}, {sync: true})
             console.log('beaforeCreate', this.todoList)
         },
 
@@ -90,68 +94,11 @@
 
 
         mounted() {
+
             console.log('mounted')
 
-            loguxClient.log.add({type: 'logux/subscribe', channel: 'todo/all'}, {sync: true})
+            // store.client.log.add({type: 'logux/subscribe', channel: 'todo/all'}, {sync: true})
 
-            loguxClient.on('add', (action) => {
-                console.log('action from mounted', action)
-
-                switch (action.type) {
-
-                    case 'todo/add': {
-                        //add todo from other client
-                        console.log('todo/add', action.newTodo)
-                        this.todoList.push(action.newTodo)
-                        break
-                    }
-
-                    case 'todo/delete': {
-                        this.todoList = this.todoList.filter((todo) => {
-                            return todo.title !== action.todo.title
-                        })
-                        break
-                    }
-
-                    case 'todo/all': {
-                        console.log('todo/all', action.todos)
-                        this.todoList = [...action.todos]
-                        break
-                    }
-
-                    case 'logux/processed': {
-                        console.log('action was added')
-                        break
-                    }
-
-
-                    default: {
-                        console.log('default')
-                    }
-                }
-            })
-
-            loguxClient.on('state', () => {
-                if (loguxClient.state === 'disconnected' || loguxClient.state === 'connecting' || loguxClient.state === 'sending') {
-                    this.isConnection = false
-                } else {
-                    this.isConnection = true
-                }
-
-                if (this.isConnection) {
-                    toast({
-                        message: 'Connection established!',
-                        duration: 2000,
-                        type: "is-primary",
-                        position: "right",
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        opacity: 0.8
-                    })
-                }
-
-                this.connectionStatus = loguxClient.state
-            })
         },
 
 
@@ -166,22 +113,23 @@
 
 
         methods: {
+            ...mapMutations({add: 'addTodo'}),
 
-            addTodo(_title) {
-                
-                console.log('addTodo from TodoApp', _title)
+            addTodo(title) {
 
-                if (_title.trim() === '') return
+                console.log('addTodo from TodoApp', title.trim())
+
+                if (title.trim() === '') return
 
                 const newTodo = {
                     id: undefined,
-                    title: _title,
+                    title: title,
                     status: undefined,
                 }
 
-                this.todoList.push(newTodo)
-
-                loguxClient.log.add({type: 'todo/add', newTodo}, {sync: true})
+                // store.client.log.add({type: 'addTodo',value:newTodo})
+                // store.client.log.add({type:'todo/add', value:newTodo})
+                this.add(newTodo)
 
                 this.todoTitle = ''
             },
@@ -196,7 +144,6 @@
                     return _todo.title !== todo.title
                 })
 
-                loguxClient.log.add({type: 'todo/delete', todo}, {sync: true})
             }
         }
     }
