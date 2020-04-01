@@ -1,32 +1,63 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {createLogux} from '@logux/vuex'
-import {log} from '../../node_modules/@logux/client'
 
 Vue.use(Vuex)
 
-let userToken = 'userToken'
+const userToken = 'userToken'
 
 const Logux = createLogux({
     subprotocol: '1.0.0',
-    server: process.env.NODE_ENV === 'development'
-        ? 'ws://localhost:31337'
-        : 'wss://logux.example.com',
-    userId: userToken,  // TODO: We will fill it in next chapter
-    credentials: '' // TODO: We will fill it in next chapter
+    server: 'ws://127.0.0.1:31337',
+    userId: userToken,
+    credentials: userToken
 })
 
 
-const store = new Logux.Store({
-    state: {},
-    mutations: {},
-    actions: {},
+export default new Logux.Store({
+
+    state: {
+        todos: [{title: '1'}, {title: '2'}, {title: '3'},],
+    },
+
+
+    mutations: {
+
+        addTodo(state, todo) {
+            console.log('[MUTATION] addTodo', state)
+            const newTodo = todo.value
+            state.todos.push(newTodo)
+        },
+
+        deleteTodo({state}, todo) {
+            console.log('[MUTATION] deleteTodo ', state)
+            state.todos = state.todos.filter((_todo) => {
+                return _todo.title !== todo.title
+            })
+        },
+
+        todoAll(state, action) {
+            console.log('[MUTATION] todoAll ', action)
+            state.todos = [...action.todos]
+        },
+
+    },
+
+
+    actions: {
+        addTodo(todo) {
+            console.log('[ACTION] addTodo:', todo)
+        }
+    },
+
+
+    getters: {
+        getTodos: (state) => {
+            return state.todos
+        }
+    },
+
+
     modules: {}
 })
 
-
-log(store.client)
-
-store.client.start()
-
-export default store
