@@ -9,16 +9,19 @@ const app = new Server(
 )
 
 
-let todos = [];
+let todos = [{title:'fromServer1'},{title:'fromServer1'},{title:'fromServer1'}];
 
 
 app.auth((userId, token) => {
     return true;
 })
 
+app.log.on('add', (action)=>{
+	console.log('test',action)
+})
 
-app.type('todo/add', {
 
+app.type('todoAdd', {
 
     access() {
         console.log('type acscess todo/add')
@@ -31,7 +34,7 @@ app.type('todo/add', {
     },
 
     process(ctx, action, meta) {
-        todos.push(action.newTodo)
+        todos.push(action.value)
         console.log('type process todo/add', todos)
     }
 
@@ -68,7 +71,7 @@ app.channel('todo/all', {
 
     init(ctx, action, meta) {
         console.log('channel init todo/all', todos)
-        ctx.sendBack({ type: 'todo/all', todos }, { reasons: 'fromServer' })
+        ctx.sendBack({ type: 'todoAll', todos }, { reasons: 'fromServer' })
     }
 
 });
