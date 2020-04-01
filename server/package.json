@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@logux/server": "^0.5.3"
+    "@logux/server": "^0.6.1"
   }
 }
