@@ -9,16 +9,13 @@ const app = new Server(
 )
 
 
-let todos = [{title:'fromServer1'},{title:'fromServer1'},{title:'fromServer1'}];
+let todos = [];
 
 
 app.auth((userId, token) => {
     return true;
 })
 
-app.log.on('add', (action)=>{
-	console.log('test',action)
-})
 
 
 app.type('todoAdd', {
@@ -34,14 +31,16 @@ app.type('todoAdd', {
     },
 
     process(ctx, action, meta) {
+        console.log('type process todoAdd')
         todos.push(action.value)
-        console.log('type process todo/add', todos)
+        console.log('type process todoAdd', todos)
     }
 
 });
 
 
-app.type('todo/delete', {
+
+app.type('todoDelete', {
 
     access() {
         console.log('type access todo/delete')
@@ -54,7 +53,7 @@ app.type('todo/delete', {
     },
 
     process(ctx, action, meta) {
-        todos = todos.filter((todo) => { return todo.title != action.todo.title })
+        todos = todos.filter((todo) => { return todo.title != action.value.title })
         console.log('type process todo/delete', todos)
     }
 
