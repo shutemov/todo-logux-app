@@ -5,14 +5,14 @@
             been saved when network comeback!
         </div>
 
-        <div class="section notification is-success ">
+        <div class="section notification is-primary">
             <h1 class="title"> My todo list</h1>
 
             <h1 class="subtitle ">App status: {{connectionStatus}}</h1>
             <div class="columns is-centered">
                 <div class="column is-half">
 
-                    <div class="control has-icons-right is-half">
+                    <div class="control has-icons-right">
                         <input class="input is-large" type="email" placeholder="Todo" id="todo-input"
                                @keyup.enter="addTodo(todoTitle)" v-model="todoTitle" style="color:gray">
                         <span class="icon is-medium is-right">
@@ -28,9 +28,17 @@
         <div class="section notification">
             <div class="container">
                 <div class="columns is-centered">
-                    <div class="column is-half">
+                    <div class="column is-two-fifths notification is-warning">
+                        <h1 class="subtitle">All todos</h1>
                         <todo-viewer
-                                :todo-list="todos"
+                                :todo-list="undoneTodos"
+                                v-on:todo:delete="deleteTodo($event)"></todo-viewer>
+                    </div>
+
+                    <div class="column is-two-fifths notification is-success">
+                        <h1 class="subtitle">Completed todos</h1>
+                        <todo-viewer
+                                :todo-list="doneTodos"
                                 v-on:todo:delete="deleteTodo($event)"></todo-viewer>
                     </div>
                 </div>
@@ -45,6 +53,7 @@
 <script>
     import todoViewer from '@/components/TodoViewer';
     import store from '../store/store'
+
     import {mapGetters, mapMutations} from 'vuex'
     // import {toast} from 'bulma-toast'
 
@@ -70,26 +79,21 @@
 
             todos() {
                 return this.getTodos
+            },
+
+            doneTodos() {
+                console.log('[COMPUTED] done todos')
+                return this.getTodos.filter(todo => {
+                    return !!todo.isDone
+                })
+            },
+
+            undoneTodos() {
+                return this.getTodos.filter(todo => {
+                    return !todo.isDone
+                })
             }
-        },
 
-
-        watch: {
-            todoList: () => {
-                console.log('todoList was been changed', this)
-            }
-        },
-
-
-        beforeCreate() {
-            store.client.log.add({type: 'logux/subscribe', channel: 'todo/all'}, {sync: true})
-            console.log('beaforeCreate', this.todoList)
-        },
-
-
-        created() {
-
-            console.log('created', this.todoList)
         },
 
 
@@ -97,52 +101,76 @@
 
             console.log('mounted')
 
-            // store.client.log.add({type: 'logux/subscribe', channel: 'todo/all'}, {sync: true})
-
-        },
-
-
-        beforeUpdate() {
-            console.log('beforeUpdate')
-        },
+            /*
+            * Subscribe action for fetching init todos
+            */
+            store.client.log.add({type: 'logux/subscribe', channel: 'todo/all'}, {sync: true})
 
 
-        updated() {
-            console.log('updated')
+            /*
+            * Action log listener for debag
+            */
+            store.client.on('add', (action) => {
+                console.log('[add action listener]', action)
+            })
+
+
+            /*
+            * Connection state checker
+            */
+            store.client.on('state', (action) => {
+
+                console.log('[state action listener]', action)
+
+                if (store.client.state === 'disconnected' || store.client.state === 'connecting') {
+                    this.isConnection = false
+                } else {
+                    this.isConnection = true
+                }
+
+                this.connectionStatus = store.client.state
+            })
+
+
         },
 
 
         methods: {
-            ...mapMutations({add: 'addTodo'}),
 
+            ...mapMutations(['todoAdd', 'todoDelete']),
+
+
+            /*
+            * Adding new todo
+            */
             addTodo(title) {
 
-                console.log('addTodo from TodoApp', title.trim())
+                console.log('[METHOD] addTodo from TodoApp', title.trim())
 
                 if (title.trim() === '') return
 
                 const newTodo = {
                     id: undefined,
                     title: title,
-                    status: undefined,
+                    isDone: undefined,
                 }
 
-                // store.client.log.add({type: 'addTodo',value:newTodo})
-                // store.client.log.add({type:'todo/add', value:newTodo})
-                this.add(newTodo)
+                store.commit.sync({type: 'todoAdd', value: newTodo})
 
                 this.todoTitle = ''
             },
 
+
+            /*
+            * deleting todo
+            */
             deleteTodo(todo) {
 
-                console.log('deleteTodo from TodoApp', todo)
+                console.log('[METHOD] deleteTodo from TodoApp', todo)
 
                 if (!todo) return
 
-                this.todoList = this.todoList.filter((_todo) => {
-                    return _todo.title !== todo.title
-                })
+                store.commit.sync({type: 'todoDelete', value: todo})
 
             }
         }
