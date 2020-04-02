@@ -8,7 +8,7 @@
 
 
         <div class="column is-three-fifths">
-            <input class="input " v-model="this.todo.title" >
+            <input class="input " v-model="this.todo.title" readonly>
         </div>
 
 <!--or textarea way-->
@@ -26,7 +26,7 @@
 <!--        </div>-->
 
         <div class="column ">
-            <button class="button is-success ">✓</button>
+            <button class="button is-success " @click="doneTodo">✓</button>
         </div>
 
 
@@ -58,6 +58,11 @@
             deleteTodo() {
                 console.log('deleteTodo from TodoViewerItem',this.todo)
                 this.$emit('todo:delete', this.todo)
+            },
+
+            doneTodo() {
+                console.log('doneTodo from TodoViewerItem',this.todo)
+                this.todo.isDone = true
             }
 
         }
