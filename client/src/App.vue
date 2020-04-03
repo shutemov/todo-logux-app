@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div id="app">
         <todo-app></todo-app>
     </div>
 </template>
@@ -23,4 +23,5 @@
         text-align: center;
         color: #2c3e50;
     }
+    
 </style>
