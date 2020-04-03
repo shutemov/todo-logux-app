@@ -2,7 +2,7 @@
     <div class="hero ">
 
         <section class="hero is-large is-primary ">
-            <div v-if="!isConnection" class="tag is-medium is-warning column is-12">Connection lost: Your actions will
+            <div v-if="!isConnection" class="tag is-medium column is-12">Connection lost: Your actions will
                 been saved when network comeback!
             </div>
 
@@ -58,7 +58,7 @@
     import store from '../store/store'
 
     import {mapGetters, mapMutations} from 'vuex'
-    // import {toast} from 'bulma-toast'
+    import {toast} from 'bulma-toast'
 
 
     export default {
@@ -80,10 +80,16 @@
         computed: {
             ...mapGetters(['getTodos']),
 
+            /*
+            * All todos in app
+            */
             todos() {
                 return this.getTodos
             },
 
+            /*
+            * Computing done todos
+            */
             doneTodos() {
                 console.log('[COMPUTED] doneTodos')
                 return this.getTodos.filter(todo => {
@@ -91,6 +97,9 @@
                 })
             },
 
+            /*
+            * Computing undone todos
+            */
             undoneTodos() {
                 console.log('[COMPUTED] undoneTodos')
                 return this.getTodos.filter(todo => {
@@ -112,7 +121,7 @@
 
 
             /*
-            * Action log listener for debag
+            * Action listener for debag
             */
             store.client.on('add', (action) => {
                 console.log('[add action listener]', action)
@@ -120,7 +129,7 @@
 
 
             /*
-            * Connection state checker
+            * Connection state listener
             */
             store.client.on('state', (action) => {
 
@@ -162,6 +171,13 @@
                 store.commit.sync({type: 'todoAdd', value: newTodo})
 
                 this.todoTitle = ''
+
+                toast({
+                    message: "Todo created!",
+                    type: "is-success",
+                    duration: 2000,
+                    closeOnClick: true,
+                });
             },
 
 
@@ -176,6 +192,12 @@
 
                 store.commit.sync({type: 'todoDelete', value: todo})
 
+                toast({
+                    message: "Todo deleted!",
+                    type: "is-warning",
+                    duration: 2000,
+                    closeOnClick: true,
+                });
             }
         }
     }
