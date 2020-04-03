@@ -1,51 +1,55 @@
 <template>
+    <div class="container ">
 
-    <section id="app" class="is-large is-warning is-bold">
-        <div v-if="!isConnection" class="tag is-medium is-warning column is-12">Connection lost: Your actions will
-            been saved when network comeback!
-        </div>
+        <section class="is-large is-warning is-bold">
+            <div v-if="!isConnection" class="tag is-medium is-warning column is-12">Connection lost: Your actions will
+                been saved when network comeback!
+            </div>
 
-        <div class="section notification is-primary">
-            <h1 class="title"> My todo list</h1>
+            <div class="section notification is-primary">
+                <h1 class="title"> My todo list</h1>
 
-            <h1 class="subtitle ">App status: {{connectionStatus}}</h1>
-            <div class="columns is-centered">
-                <div class="column is-half">
-
-                    <div class="control has-icons-right">
-                        <input class="input is-large" type="email" placeholder="Todo" id="todo-input"
-                               @keyup.enter="addTodo(todoTitle)" v-model="todoTitle" style="color:gray">
-                        <span class="icon is-medium is-right">
+                <h1 class="subtitle ">App status: {{connectionStatus}}</h1>
+                <div class="columns is-centered">
+                    <div class="column is-half">
+                        <div class="control has-icons-right">
+                            <input class="input is-large" type="email" placeholder="Todo" id="todo-input"
+                                   @keyup.enter="addTodo(todoTitle)" v-model="todoTitle" style="color:gray">
+                            <span class="icon is-medium is-right">
                             <i class="fas fa-plus"></i>
                         </span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <hr>
+            <hr>
+        </section>
 
+        <div class="section">
+            <div class="columns is-centered">
 
-        <div class="section notification">
-            <div class="container">
-                <div class="columns is-centered">
-                    <div class="column is-two-fifths notification is-warning">
+                <div class="column is-half">
+                    <div class="notification is-warning">
                         <h1 class="subtitle">All todos</h1>
                         <todo-viewer
                                 :todo-list="undoneTodos"
                                 v-on:todo:delete="deleteTodo($event)"></todo-viewer>
                     </div>
+                </div>
 
-                    <div class="column is-two-fifths notification is-success">
+                <div class="column is-half">
+                    <div class="notification is-success">
                         <h1 class="subtitle">Completed todos</h1>
                         <todo-viewer
                                 :todo-list="doneTodos"
-                                v-on:todo:delete="deleteTodo($event)"></todo-viewer>
+                                v-on:todo:delete="deleteTodo($event)"
+                                style="color:gray;"></todo-viewer>
                     </div>
                 </div>
+
             </div>
         </div>
-
-    </section>
+    </div>
 
 
 </template>
@@ -82,13 +86,14 @@
             },
 
             doneTodos() {
-                console.log('[COMPUTED] done todos')
+                console.log('[COMPUTED] doneTodos')
                 return this.getTodos.filter(todo => {
                     return !!todo.isDone
                 })
             },
 
             undoneTodos() {
+                console.log('[COMPUTED] undoneTodos')
                 return this.getTodos.filter(todo => {
                     return !todo.isDone
                 })
@@ -179,21 +184,5 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    h3 {
-        margin: 40px 0 0;
-    }
 
-    ul {
-        list-style-type: none;
-        padding: 0;
-    }
-
-    li {
-        display: inline-block;
-        margin: 0 10px;
-    }
-
-    a {
-        color: #42b983;
-    }
 </style>
