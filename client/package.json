@@ -10,7 +10,7 @@
   "dependencies": {
     "@logux/client": "^0.7.0",
     "@logux/vuex": "^0.1.2",
-    "bulma": "^0.8.0",
+    "bulma": "^0.8.1",
     "bulma-toast": "^1.5.4",
     "core-js": "^3.6.4",
     "vue": "^2.6.11",
