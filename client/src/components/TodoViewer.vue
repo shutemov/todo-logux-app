@@ -1,11 +1,10 @@
 <template>
-    <div class="">
+    <div >
         <todo-item
                 v-for="(_todo,index) in this.todoList"
                 :key="'_todo'+index"
                 :todo="_todo"
                 v-on:todo:delete="deleteTodo($event)"></todo-item>
-
     </div>
 </template>
 
