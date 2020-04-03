@@ -1,14 +1,13 @@
 <template>
-    <div class="container ">
+    <div class="hero ">
 
-        <section class="is-large is-warning is-bold">
+        <section class="hero is-large is-primary ">
             <div v-if="!isConnection" class="tag is-medium is-warning column is-12">Connection lost: Your actions will
                 been saved when network comeback!
             </div>
 
-            <div class="section notification is-primary">
+            <div class="section">
                 <h1 class="title"> My todo list</h1>
-
                 <h1 class="subtitle ">App status: {{connectionStatus}}</h1>
                 <div class="columns is-centered">
                     <div class="column is-half">
