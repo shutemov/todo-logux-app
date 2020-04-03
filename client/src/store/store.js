@@ -24,21 +24,25 @@ export default new Logux.Store({
 
     mutations: {
 
-        todoAdd(state, todo) {
-            console.log('[MUTATION] addTodo', state)
-            const newTodo = todo.value
+        todoAdd(state, action) {
+            console.log('[MUTATION] addTodo', action)
+            const newTodo = action.value
             state.todos.push(newTodo)
 
         },
 
-        todoDelete(state, todo) {
-            console.log('[MUTATION] deleteTodo ', todo)
+
+        todoDelete(state, action) {
+            console.log('[MUTATION] deleteTodo ', action)
             state.todos = state.todos.filter((_todo) => {
-                return _todo.title !== todo.value.title
+                return _todo.title !== action.value.title
             })
             console.log('[MUTATION] deleteTodo ', state.todos)
         },
 
+        /*
+        * Getting init state after subscribe on the channel 'todo/all'
+        */
         todoAll(state, action) {
             console.log('[MUTATION] todoAll ', action)
             state.todos = [...action.todos]
