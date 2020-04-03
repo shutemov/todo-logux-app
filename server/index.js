@@ -8,7 +8,9 @@ const app = new Server(
     })
 )
 
-
+/*
+* Database emulation
+*/
 let todos = [];
 
 
@@ -17,7 +19,9 @@ app.auth((userId, token) => {
 })
 
 
-
+/*
+* Todo add listener
+*/
 app.type('todoAdd', {
 
     access() {
@@ -39,7 +43,9 @@ app.type('todoAdd', {
 });
 
 
-
+/*
+* Todo delete listener
+*/
 app.type('todoDelete', {
 
     access() {
@@ -60,6 +66,44 @@ app.type('todoDelete', {
 });
 
 
+/*
+* Todo done listener
+*/
+app.type('todoDone', {
+
+    access() {
+        console.log('type access todo/done')
+        return true;
+    },
+
+    resend() {
+        console.log('type resend todo/done')
+        return { channel: 'todo/all' }
+    },
+
+    process(ctx, action, meta) {
+
+        const todoTitle = action.value.title
+
+
+        const index = state.todos.findIndex((todo) => {
+            return todo.title === todoTitle
+        })
+
+
+        if (index === -1) return
+
+        state.todos[index].isDone = true
+
+        console.log('type process todo/done', todos)
+    }
+
+});
+
+
+/*
+* Todo actions resender
+*/
 app.channel('todo/all', {
 
     access(ctx, action, meta) {
