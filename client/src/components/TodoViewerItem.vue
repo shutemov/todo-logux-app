@@ -2,7 +2,7 @@
     <div class="columns">
 
 
-        <div class="column  ">
+        <div class="column">
             <button class="button is-danger " @click="deleteTodo()">🗑</button>
         </div>
 
@@ -12,7 +12,7 @@
         </div>
 
 <!--or textarea way-->
-<!--        <div class="field is-four-fifths">-->
+<!--        <div class="field is-three-fifths">-->
 <!--            <div class="control">-->
 <!--                <textarea-->
 <!--                        class="textarea is-warning"-->
