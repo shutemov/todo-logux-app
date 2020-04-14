@@ -1,36 +1,23 @@
 <template>
-    <div class="columns">
 
-
-        <div class="column is-1 is-1-mobile">
-            <button class="button is-danger " @click="deleteTodo()">🗑</button>
+    <div class="field has-addons">
+        <div class="control">
+            <a class="button is-danger" @click="deleteTodo()">
+                🗑
+            </a>
         </div>
 
-
-        <div class="column is-10 is-10-mobile">
-            <input class="input " v-model="this.todo.title" readonly>
+        <div class="control is-expanded">
+            <input class="input" type="text" v-model="this.todoTitle" readonly>
         </div>
 
-        <!--or textarea way-->
-        <!--        <div class="field is-three-fifths">-->
-        <!--            <div class="control">-->
-        <!--                <textarea-->
-        <!--                        class="textarea is-warning"-->
-        <!--                        placeholder="Warning textarea"-->
-        <!--                        :value="this.todo.title"-->
-        <!--                        rows="2"-->
-        <!--                        minlength="20"-->
-        <!--                        readonly>-->
-        <!--                </textarea>-->
-        <!--            </div>-->
-        <!--        </div>-->
-
-        <div v-if="!this.todo.isDone" class="column is-1 is-1-mobile">
-            <button class="button is-success " @click="doneTodo">✓</button>
+        <div v-if="!this.todo.isDone" class="control">
+            <button class="button is-success" @click="doneTodo">
+                ✓
+            </button>
         </div>
-
-
     </div>
+
 </template>
 
 <script>
