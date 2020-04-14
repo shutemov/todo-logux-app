@@ -1,5 +1,5 @@
 <template>
-    <div class="hero ">
+    <div class="hero">
 
         <section class="hero is-large is-primary ">
             <div v-if="!isConnection" class="tag is-medium column is-12">Connection lost: Your actions will
@@ -135,11 +135,8 @@
 
                 console.log('[state action listener]', action)
 
-                if (store.client.state === 'disconnected' || store.client.state === 'connecting') {
-                    this.isConnection = false
-                } else {
-                    this.isConnection = true
-                }
+                // Changes offline-state message
+                this.isConnection = !(store.client.state === 'disconnected' || store.client.state === 'connecting');
 
                 this.connectionStatus = store.client.state
             })
@@ -165,7 +162,7 @@
                 const newTodo = {
                     id: undefined,
                     title: title,
-                    isDone: undefined,
+                    isDone: false,
                 }
 
                 store.commit.sync({type: 'todoAdd', value: newTodo})
