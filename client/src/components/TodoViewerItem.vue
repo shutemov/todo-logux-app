@@ -8,7 +8,7 @@
         </div>
 
         <div class="control is-expanded">
-            <input class="input" type="text" v-model="this.todoTitle" readonly>
+            <input class="input" type="text" v-model="this.todo.title" readonly>
         </div>
 
         <div v-if="!this.todo.isDone" class="control">
