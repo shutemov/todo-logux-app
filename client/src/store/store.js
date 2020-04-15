@@ -25,14 +25,14 @@ export default new Logux.Store({
     mutations: {
 
         /*
-        * [mutation] add todo
+        * Add todo to todoList
         */
         todoAdd(state, action) {
             console.log('[MUTATION] addTodo', action)
 
             const newTodo = action.value
 
-            //Checking on existing
+            //Checking on existing in todoList
             const todoCandidate = state.todos.find(todo => {
                 return todo.title === newTodo.title
             })
@@ -44,7 +44,7 @@ export default new Logux.Store({
 
 
         /*
-        * [mutation] delete todo
+        * Delete todo from todoList
         */
         todoDelete(state, action) {
             console.log('[MUTATION] deleteTodo ', action)
@@ -56,7 +56,7 @@ export default new Logux.Store({
 
 
         /*
-        * [mutation] change state
+        * Changes todo state
         */
         todoDone(state, action) {
             console.log('[MUTATION] todoDone', action)
@@ -74,7 +74,7 @@ export default new Logux.Store({
 
 
         /*
-        * [mutation] Getting init state after subscribe on the channel 'todo/all'
+        * Getting init state after subscribe on the channel 'todo/all'
         */
         todoAll(state, action) {
             console.log('[MUTATION] todoAll ', action)
@@ -90,7 +90,7 @@ export default new Logux.Store({
     getters: {
 
         /*
-        * [getter] Getting init state after subscribe on the channel 'todo/all'
+        * Getting init state after subscribe on the channel 'todo/all'
         */
         getTodos: (state) => {
             return state.todos
